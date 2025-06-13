@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat UNINASSAU Barreiras</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .chat-container {
+            width: 380px;
+            height: 650px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background-color: #0066A1;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 12px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        
+        .bot-message {
+            background-color: #e6e6e6;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .user-message {
+            background-color: #0066A1;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .option-button {
+            background-color: white;
+            border: 1px solid #0066A1;
+            color: #0066A1;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .option-button:hover {
+            background-color: #0066A1;
+            color: white;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 12px;
+            background-color: #eee;
+            border-top: 1px solid #ddd;
+        }
+        
+        #message-input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        #send-button {
+            background-color: #0066A1;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        #send-button:hover {
+            background-color: #004d7a;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px 15px;
+            background-color: #e6e6e6;
+            border-radius: 18px;
+            width: fit-content;
+            margin-bottom: 15px;
+        }
+        
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #999;
+            margin-right: 3px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+            margin-right: 0;
+        }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        .consultor-button {
+            background-color: white;
+            border: 1px solid #0066A1;
+            color: #0066A1;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+        
+        .consultor-button:hover {
+            background-color: #0066A1;
+            color: white;
+        }
+        
+        .consultor-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .link-button {
+            color: #0066A1;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+            padding: 8px 12px;
+            border: 1px solid #0066A1;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        
+        .link-button:hover {
+            background-color: #0066A1;
+            color: white;
+        }
+        
+        .highlight {
+            color: #0066A1;
+            font-weight: bold;
+        }
+        
+        .course-list {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .course-item {
+            margin-bottom: 5px;
+        }
+        
+        .course-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .welcome-message img {
+            width: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .bot-name {
+            font-weight: bold;
+            color: #0066A1;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            UNINASSAU Barreiras - Atendimento
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="typing-indicator" id="typing-indicator">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Digite sua mensagem..." autocomplete="off">
+            <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        const messagesContainer = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const typingIndicator = document.getElementById('typing-indicator');
+        
+        let userName = '';
+        let currentStep = 'inicio';
+        let selectedCourse = '';
+        let selectedCourseType = '';
+        
+        function capitalizeName(name) {
+            return name.toLowerCase().split(' ').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+        
+        const cursos = [
+            {
+                nome: "Agronomia",
+                descricao: "Forma profissionais para atuar no setor agropecuário, desde o planejamento até a execução de projetos rurais. O agrônomo pode trabalhar em fazendas, cooperativas, órgãos governamentais ou como consultor.",
+                areas: "Agronegócio, consultoria rural, pesquisa agrícola, extensão rural",
+                turno: "Noturno",
+                duracao: "5 anos"
+            },
+            {
+                nome: "Biomedicina",
+                descricao: "Forma profissionais para atuar em análises clínicas, pesquisa e desenvolvimento de medicamentos. O biomédico pode trabalhar em laboratórios, hospitais, indústrias farmacêuticas ou em pesquisa científica.",
+                areas: "Análises clínicas, pesquisa, indústria farmacêutica, saúde pública",
+                turno: "Noturno",
+                duracao: "4 anos"
+            },
+            {
+                nome: "Ciências Contábeis",
+                descricao: "Prepara você para atuar em várias áreas da contabilidade. Como contador, você poderá trabalhar em escritórios de contabilidade, departamentos financeiros, atuar como consultor, perito contábil ou até mesmo de forma autônoma.",
+                areas: "Escritórios contábeis, departamentos financeiros, consultoria, perícia contábil.",
+                turno: "Noturno",
+                duracao: "4 anos"
+            },
+            {
+                nome: "Direito",
+                descricao: "Prepara advogados para atuar na defesa de interesses individuais e coletivos. O profissional pode atuar em escritórios, empresas, órgãos públicos ou como juiz/procurador.",
+                areas: "Advocacia, consultoria jurídica, carreira pública, magistratura",
+                turno: "Noturno",
+                duracao: "5 anos"
+            },
+            {
+                nome: "Enfermagem",
+                descricao: "Forma profissionais para cuidar da saúde humana. O enfermeiro pode atuar em hospitais, clínicas, unidades básicas de saúde ou como autônomo.",
+                areas: "Hospitais, clínicas, home care, saúde pública, ensino",
+                turno: "Noturno",
+                duracao: "5 anos"
+            },
+            {
+                nome: "Farmácia",
+                descricao: "Forma profissionais para atuar no desenvolvimento e manipulação de medicamentos. O farmacêutico pode trabalhar em drogarias, indústrias farmacêuticas, hospitais ou laboratórios.",
+                areas: "Farmácias, indústrias, hospitais, laboratórios, vigilância sanitária",
+                turno: "Noturno",
+                duracao: "5 anos"
+            },
+            {
+                nome: "Fisioterapia",
+                descricao: "Forma profissionais para reabilitação física. O fisioterapeuta pode atuar em clínicas, hospitais, academias ou como autônomo.",
+                areas: "Clínicas, hospitais, esportes, reabilitação, saúde ocupacional",
+                turno: "Noturno",
+                duracao: "5 anos"
+            },
+            {
+                nome: "Fonoaudiologia",
+                descricao: "Forma profissionais para atuar na prevenção, avaliação e tratamento de distúrbios da comunicação humana. O fonoaudiólogo pode trabalhar em clínicas, hospitais, escolas ou como autônomo.",
+                areas: "Clínicas, hospitais, escolas, audiologia, voz e linguagem",
+                turno: "Noturno",
+                duracao: "5 anos"
+            },
+            {
+                nome: "Medicina Veterinária",
+                descricao: "Forma profissionais para cuidar da saúde animal. O veterinário pode atuar em clínicas, fazendas, zoológicos ou na indústria de alimentos.",
+                areas: "Clínicas veterinárias, fazendas, indústria alimentícia, saúde pública animal, pesquisa",
+                turno: "Noturno",
+                duracao: "5 anos"
+            },
+            {
+                nome: "Nutrição",
+                descricao: "Forma profissionais para orientar sobre alimentação saudável. O nutricionista pode atuar em clínicas, hospitais, academias ou como consultor.",
+                areas: "Clínicas, hospitais, esportes, indústria alimentícia, consultoria",
+                turno: "Noturno",
+                duracao: "4 anos"
+            },
+            {
+                nome: "Psicologia",
+                descricao: "Forma profissionais para cuidar da saúde mental. O psicólogo pode atuar em clínicas, hospitais, empresas ou como autônomo.",
+                areas: "Clínicas, RH empresarial, escolas, hospitais, consultório particular",
+                turno: "Diurno e Noturno",
+                duracao: "5 anos"
+            }
+        ];
+        
+        const modalidades = [
+            { nome: "Vestibular", link: "https://vestibular.uninassau.edu.br/PS_Nassau/EscolhaCurso.aspx?Cidade=Barreiras&UF=BA" },
+            { nome: "Enem", link: "https://vestibular.uninassau.edu.br/PS_Nassau/EscolhaCurso.aspx?Cidade=Barreiras&UF=BA" },
+            { nome: "Transferência", link: "https://vestibular.uninassau.edu.br/PS_Nassau/EscolhaCurso.aspx?Cidade=Barreiras&UF=BA" },
+            { nome: "Portador de Diploma", link: "https://vestibular.uninassau.edu.br/PS_Nassau/EscolhaCurso.aspx?Cidade=Barreiras&UF=BA" }
+        ];
+        
+        // Initial welcome message
+        setTimeout(() => {
+            const welcomeDiv = document.createElement('div');
+            welcomeDiv.className = 'welcome-message';
+            welcomeDiv.innerHTML = `
+                <div class="bot-message">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712139.png" alt="Assistente Virtual">
+                    <p>Olá! Meu nome é <span class="bot-name">Lua</span> 👩🏽‍💻 sou assistente virtual da <strong>UNINASSAU Barreiras</strong>, a melhor faculdade do Oeste da Bahia!</p>
+                    <p>Como gostaria de ser chamado(a)?</p>
+                </div>
+            `;
+            messagesContainer.appendChild(welcomeDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 1000);
+        
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        function sendMessage() {
+            const messageText = messageInput.value.trim();
+            if (messageText === '') return;
+            
+            addMessage(messageText, 'user-message');
+            messageInput.value = '';
+            
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+                processUserResponse(messageText);
+            }, 1500);
+        }
+        
+        function processUserResponse(userMessage) {
+            switch(currentStep) {
+                case 'inicio':
+                    userName = capitalizeName(userMessage);
+                    addMessage(`Prazer em te conhecer, ${userName}! A UNINASSAU Barreiras oferece os melhores cursos da região com laboratórios modernos e professores qualificados.`, 'bot-message');
+                    
+                    // Show courses list
+                    let cursosList = document.createElement('div');
+                    cursosList.className = 'course-list';
+                    cursosList.innerHTML = '<div class="course-title">Nossos cursos presenciais:</div>';
+                    
+                    cursos.forEach((curso, index) => {
+                        let item = document.createElement('div');
+                        item.className = 'course-item';
+                        item.textContent = `${index + 1}. ${curso.nome} (${curso.turno})`;
+                        cursosList.appendChild(item);
+                    });
+                    
+                    // Adiciona opções para EAD e Pós-Graduação
+                    cursosList.innerHTML += `
+                        <br>
+                        <div class="course-title">Outras opções:</div>
+                        <div class="course-item">12. Cursos EaD</div>
+                        <div class="course-item">13. Pós-Graduação</div>
+                        <br>
+                        Digite o <span class="highlight">número</span> da opção que você tem interesse:
+                    `;
+                    
+                    messagesContainer.appendChild(cursosList);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    
+                    currentStep = 'escolha_curso';
+                    break;
+                    
+                case 'escolha_curso':
+                    const cursoIndex = parseInt(userMessage) - 1;
+                    
+                    // Verifica se selecionou EAD (opção 12)
+                    if (userMessage === '12') {
+                        selectedCourseType = 'ead';
+                        addMessage(`Ótima escolha, ${userName}! Você selecionou os cursos <strong>EaD</strong> da UNINASSAU Barreiras.`, 'bot-message');
+                        addMessage("Por qual modalidade você gostaria de ingressar?", 'bot-message');
+                        showModalidades();
+                        currentStep = 'escolha_modalidade';
+                        return;
+                    }
+                    
+                    // Verifica se selecionou Pós-Graduação (opção 13)
+                    if (userMessage === '13') {
+                        selectedCourseType = 'pos';
+                        addMessage(`Ótima escolha, ${userName}! Você selecionou <strong>Pós-Graduação</strong> na UNINASSAU Barreiras.`, 'bot-message');
+                        addMessage("Clique no link abaixo para acessar a página de cursos de Pós-Graduação:", 'bot-message');
+                        addMessage(`<a href="https://pos.uninassau.edu.br/PSPos_Nassau/EscolhaCurso.aspx?Cidade=Barreiras&UF=BA" class="link-button" target="_blank">📌 ACESSAR PÓS-GRADUAÇÃO</a>`, 'bot-message');
+                        
+                        const finalOptions = document.createElement('div');
+                        finalOptions.className = 'options-container';
+                        finalOptions.innerHTML = `
+                            <div class="option-button" onclick="selectOption('consultor')">👥 Falar com um consultor</div>
+                            <div class="option-button" onclick="selectOption('inicio')">🏠 Voltar ao início</div>
+                        `;
+                        messagesContainer.appendChild(finalOptions);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        return;
+                    }
+                    
+                    if (cursoIndex >= 0 && cursoIndex < cursos.length) {
+                        selectedCourse = cursos[cursoIndex];
+                        selectedCourseType = 'presencial';
+                        addMessage(`Ótima escolha, ${userName}! O curso de <strong>${selectedCourse.nome}</strong> da UNINASSAU Barreiras tem duração de ${selectedCourse.duracao} no período ${selectedCourse.turno}.`, 'bot-message');
+                        addMessage(`${selectedCourse.descricao}`, 'bot-message');
+                        addMessage(`<strong>Áreas de atuação:</strong> ${selectedCourse.areas}`, 'bot-message');
+                        
+                        const optionsDiv = document.createElement('div');
+                        optionsDiv.className = 'options-container';
+                        optionsDiv.innerHTML = `
+                            <div class="option-button" onclick="selectOption('inscricao')">📝 Quero me inscrever agora</div>
+                            <div class="option-button" onclick="selectOption('consultor')">👥 Falar com um consultor</div>
+                            <div class="option-button" onclick="selectOption('formulario')">📋 Preencher formulário para matrícula</div>
+                            <div class="option-button" onclick="selectOption('outros_cursos')">🔍 Ver outros cursos</div>
+                        `;
+                        messagesContainer.appendChild(optionsDiv);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        
+                        currentStep = 'opcoes_pos_curso';
+                    } else {
+                        addMessage("Por favor, digite o número correspondente à opção que você tem interesse.", 'bot-message');
+                    }
+                    break;
+                    
+                case 'opcoes_pos_curso':
+                    break;
+                    
+                case 'escolha_consultor':
+                    showConsultores();
+                    break;
+                    
+                case 'escolha_modalidade':
+                    const modalidadeIndex = parseInt(userMessage) - 1;
+                    if (modalidadeIndex >= 0 && modalidadeIndex < modalidades.length) {
+                        const modalidade = modalidades[modalidadeIndex];
+                        addMessage(`Ótima escolha, ${userName}! Você selecionou a modalidade de ingresso: <strong>${modalidade.nome}</strong>.`, 'bot-message');
+                        
+                        if (selectedCourseType === 'ead') {
+                            addMessage(`Clique no link abaixo para acessar a página de inscrição para cursos EaD:`, 'bot-message');
+                            addMessage(`<a href="${modalidade.link}" class="link-button" target="_blank">📌 ACESSAR PÁGINA DE ${modalidade.nome.toUpperCase()} EAD</a>`, 'bot-message');
+                        } else {
+                            addMessage(`Clique no link abaixo para acessar a página de inscrição:`, 'bot-message');
+                            addMessage(`<a href="${modalidade.link}" class="link-button" target="_blank">📌 ACESSAR PÁGINA DE ${modalidade.nome.toUpperCase()}</a>`, 'bot-message');
+                        }
+                        
+                        addMessage("Precisa de mais alguma informação sobre o processo seletivo?", 'bot-message');
+                        
+                        const finalOptions = document.createElement('div');
+                        finalOptions.className = 'options-container';
+                        finalOptions.innerHTML = `
+                            <div class="option-button" onclick="selectOption('consultor')">👥 Falar com um consultor</div>
+                            <div class="option-button" onclick="selectOption('inicio')">🏠 Voltar ao início</div>
+                        `;
+                        messagesContainer.appendChild(finalOptions);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    } else {
+                        addMessage("Por favor, digite o número correspondente à modalidade desejada:", 'bot-message');
+                        showModalidades();
+                    }
+                    break;
+            }
+        }
+        
+        function selectOption(option) {
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+                
+                switch(option) {
+                    case 'inscricao':
+                        addMessage("Por qual modalidade você gostaria de ingressar na UNINASSAU Barreiras? Digite o número correspondente:", 'bot-message');
+                        showModalidades();
+                        currentStep = 'escolha_modalidade';
+                        break;
+                        
+                    case 'consultor':
+                        addMessage("Fale com nosso consultor comercial disponível. Converse diretamente pelo WhatsApp:", 'bot-message');
+                        showConsultores();
+                        currentStep = 'escolha_consultor';
+                        break;
+                        
+                    case 'formulario':
+                        addMessage(`Ótimo, ${userName}! Por favor, preencha nosso formulário que em até uma hora um consultor entrará em contato com você.`, 'bot-message');
+                        addMessage("<a href='https://forms.office.com/Pages/ResponsePage.aspx?id=CNGXUrD61EeX80SeJ06ji_zYCXBFPo5IrnQX8ilO2-ZUMFUzS0U1MU5EWlkxMDFDWU1IRlVNTFFGUi4u' class='link-button' target='_blank'>📋 ACESSAR FORMULÁRIO DE CONTATO</a>", 'bot-message');
+                        
+                        const finalOptions = document.createElement('div');
+                        finalOptions.className = 'options-container';
+                        finalOptions.innerHTML = `
+                            <div class="option-button" onclick="selectOption('consultor')">👥 Falar agora com um consultor</div>
+                            <div class="option-button" onclick="selectOption('inicio')">🏠 Voltar ao início</div>
+                        `;
+                        messagesContainer.appendChild(finalOptions);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        break;
+                        
+                    case 'outros_cursos':
+                        currentStep = 'inicio';
+                        addMessage(`Vamos ver outros cursos, ${userName}. Aqui está nossa lista novamente:`, 'bot-message');
+                        
+                        let cursosList = document.createElement('div');
+                        cursosList.className = 'course-list';
+                        cursosList.innerHTML = '<div class="course-title">Nossos cursos presenciais:</div>';
+                        
+                        cursos.forEach((curso, index) => {
+                            let item = document.createElement('div');
+                            item.className = 'course-item';
+                            item.textContent = `${index + 1}. ${curso.nome} (${curso.turno})`;
+                            cursosList.appendChild(item);
+                        });
+                        
+                        cursosList.innerHTML += `
+                            <br>
+                            <div class="course-title">Outras opções:</div>
+                            <div class="course-item">12. Cursos EaD</div>
+                            <div class="course-item">13. Pós-Graduação</div>
+                            <br>
+                            Digite o <span class="highlight">número</span> da opção que você tem interesse:
+                        `;
+                        
+                        messagesContainer.appendChild(cursosList);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        break;
+                        
+                    case 'inicio':
+                        currentStep = 'inicio';
+                        addMessage(`Vamos começar novamente, ${userName}. Qual curso você gostaria de conhecer?`, 'bot-message');
+                        
+                        let cursosListNew = document.createElement('div');
+                        cursosListNew.className = 'course-list';
+                        cursosListNew.innerHTML = '<div class="course-title">Nossos cursos presenciais:</div>';
+                        
+                        cursos.forEach((curso, index) => {
+                            let item = document.createElement('div');
+                            item.className = 'course-item';
+                            item.textContent = `${index + 1}. ${curso.nome} (${curso.turno})`;
+                            cursosListNew.appendChild(item);
+                        });
+                        
+                        cursosListNew.innerHTML += `
+                            <br>
+                            <div class="course-title">Outras opções:</div>
+                            <div class="course-item">12. Cursos EaD</div>
+                            <div class="course-item">13. Pós-Graduação</div>
+                            <br>
+                            Digite o <span class="highlight">número</span> da opção que você tem interesse:
+                        `;
+                        
+                        messagesContainer.appendChild(cursosListNew);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        break;
+                }
+            }, 500);
+        }
+        
+        function showConsultores() {
+            const consultoresDiv = document.createElement('div');
+            consultoresDiv.className = 'options-container';
+            consultoresDiv.innerHTML = `
+                <div class="consultor-button" onclick="window.open('https://wa.me/5577999943691', '_blank')">
+                    <div class="consultor-name">Consultor Comercial</div>
+                    <div>📞 (77) 99994-3691</div>
+                </div>
+                <div class="option-button" onclick="selectOption('inicio')">🏠 Voltar ao início</div>
+            `;
+            messagesContainer.appendChild(consultoresDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function showModalidades() {
+            const modalidadesDiv = document.createElement('div');
+            modalidadesDiv.className = 'course-list';
+            
+            modalidades.forEach((modalidade, index) => {
+                let item = document.createElement('div');
+                item.className = 'course-item';
+                item.textContent = `${index + 1}. ${modalidade.nome}`;
+                modalidadesDiv.appendChild(item);
+            });
+            
+            messagesContainer.appendChild(modalidadesDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function addMessage(text, className) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', className);
+            messageElement.innerHTML = text;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            typingIndicator.style.display = 'block';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            typingIndicator.style.display = 'none';
+        }
+        
+        // Make selectOption available globally
+        window.selectOption = selectOption;
+    </script>
+</body>
+</html>
